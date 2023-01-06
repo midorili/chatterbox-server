@@ -11,6 +11,8 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var storageArr = require('./storage');
+
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -21,18 +23,29 @@ var defaultCorsHeaders = {
 var requestHandler = function(request, response) {
   // The outgoing status.
   var statusCode = 200;
-  console.log('request', request);
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = 'application/json';
-  if (request.method = 'GET' && request.url === '/classes/messages') { // request.url is '/' right now
-    console.log(response);
+
+  if (request.method === 'GET' && request.url === '/classes/messages') {
+    response.writeHead(statusCode, headers); // 2nd parameter was previously 'headers'
+    response.end(JSON.stringify(storageArr.storageArr));
+  } else if (request.method === 'POST' && request.url === '/classes/messages') {
+    var body = [];
+    request.on('data', function(chunk) {
+      body += chunk;
+      console.log('body', body);
+      storageArr.storageArr.push(JSON.parse(body));
+      response.writeHead(201, headers);
+      response.end();
+    });
+  } else if (request.method === 'OPTIONS' && request.url.includes('classes/messages')) {
+    response.writeHead(200, headers);
+    response.end(JSON.stringify(storageArr.storageArr));
+  } else {
+    statusCode = 404;
     response.writeHead(statusCode, headers);
-    // console.log(request.url);
-    response.end(JSON.stringify('hello'));
-  } else if ((request.method = 'POST' && request.url === '/classes/messages')) {
-    response.writeHead(statusCode, headers);
-    response.end(JSON.stringify('hello'));
+    response.end();
   }
   // Request and Response come from node's http module.
   //
