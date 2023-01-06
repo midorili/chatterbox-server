@@ -28,16 +28,15 @@ var requestHandler = function(request, response) {
   headers['Content-Type'] = 'application/json';
 
   if (request.method === 'GET' && request.url === '/classes/messages') {
-    response.writeHead(statusCode, headers); // 2nd parameter was previously 'headers'
+    response.writeHead(statusCode, headers);
     response.end(JSON.stringify(storageArr.storageArr));
   } else if (request.method === 'POST' && request.url === '/classes/messages') {
-    var body = [];
+    var body = '';
     request.on('data', function(chunk) {
       body += chunk;
-      // console.log('body', body);
       storageArr.storageArr.push(JSON.parse(body));
       response.writeHead(201, headers);
-      response.end();
+      response.end(JSON.stringify(storageArr.storageArr));
     });
   } else if (request.method === 'OPTIONS' && request.url.includes('classes/messages')) {
     response.writeHead(200, headers);
