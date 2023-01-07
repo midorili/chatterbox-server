@@ -12,6 +12,7 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 var storageArr = require('./storage');
+var fs = require('fs');
 
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',

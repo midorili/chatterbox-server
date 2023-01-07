@@ -1,41 +1,111 @@
+// RoomsView is an object which controls the DOM elements
+// responsible for displaying and selecting rooms.
+
 var RoomsView = {
 
   $button: $('#rooms button'),
   $select: $('#rooms select'),
 
   initialize: function() {
+    // TODO: Perform any work which needs to be done
+    // when this view loads.
 
-    RoomsView.$select.on('change', RoomsView.handleChange);
-    RoomsView.$button.on('click', RoomsView.handleClick);
-      },
+    $('#rooms select').on('click', function() {
+      RoomsView.render();
+    });
+    RoomsView.handleChange();
+    RoomsView.handleClick();
+
+  },
 
   render: function() {
-
-    RoomsView.$select.html('');
-    Rooms
-      .items()
-      .each(RoomsView.renderRoom);
-    RoomsView.$select.val(Rooms.selected);
+    // TODO: Render out the list of rooms.
+    $('#rooms select').empty();
+    for (var i = 0; i < Rooms.storage.length; i++) {
+      RoomsView.renderRoom(Rooms.storage[i]);
+    }
+    $('#rooms select').prepend($('<option></option>').attr('roomname', 'newRoom').text('New Room'));
   },
 
   renderRoom: function(roomname) {
-    var $option = $('<option>').val(roomname).text(roomname);
-    RoomsView.$select.append($option);
+    // TODO: Render out a single room.
+    $('#rooms select').append($('<option></option>').attr('roomname', roomname).text(roomname));
+  },
+
+  filterRoom: function(room) {
+    if (room === 'New Room') {
+      $('<input>', {
+        id: 'newRoom',
+      }).appendTo('#rooms');
+    } else {
+      $('#chats').empty();
+      for (var i = 0; i < Messages.storage.length; i++) {
+        if (Messages.storage[i].roomname === room) {
+          MessagesView.renderMessage(Messages.storage[i]);
+        }
+      }
+    }
   },
 
   handleChange: function(event) {
-    Rooms.selected = RoomsView.$select.val();
-    MessagesView.render();
+    // TODO: Handle a user selecting a different room.
+    $('#rooms select').on('change', function () {
+      var room = $('#rooms select').find(':selected').text();
+      RoomsView.filterRoom(room);
+    });
   },
 
   handleClick: function(event) {
-    var roomname = prompt('Enter room name');
-    if (roomname) {
-      Rooms.add(roomname, () => {
-        RoomsView.render();
-        MessagesView.render();
-      });
-    }
-      }
+    // TODO: Handle the user clicking the "Add Room" button.
+    $('#rooms button').on('click', function () {
+      var roomText = document.getElementById('newRoom').value;
+      Rooms.add(roomText);
+
+      //Messages.generateNewMessage();
+    });
+  }
 
 };
+
+
+// var RoomsView = {
+
+//   $button: $('#rooms button'),
+//   $select: $('#rooms select'),
+
+//   initialize: function() {
+
+//     RoomsView.$select.on('change', RoomsView.handleChange);
+//     RoomsView.$button.on('click', RoomsView.handleClick);
+//       },
+
+//   render: function() {
+
+//     RoomsView.$select.html('');
+//     Rooms
+//       .items()
+//       .each(RoomsView.renderRoom);
+//     RoomsView.$select.val(Rooms.selected);
+//   },
+
+//   renderRoom: function(roomname) {
+//     var $option = $('<option>').val(roomname).text(roomname);
+//     RoomsView.$select.append($option);
+//   },
+
+//   handleChange: function(event) {
+//     Rooms.selected = RoomsView.$select.val();
+//     MessagesView.render();
+//   },
+
+//   handleClick: function(event) {
+//     var roomname = prompt('Enter room name');
+//     if (roomname) {
+//       Rooms.add(roomname, () => {
+//         RoomsView.render();
+//         MessagesView.render();
+//       });
+//     }
+//       }
+
+// };

@@ -1,32 +1,92 @@
+// MessagesView is an object which controls the DOM elements
+// responsible for displaying messages.
+
 var MessagesView = {
 
   $chats: $('#chats'),
 
   initialize: function() {
-
-    MessagesView.$chats.on('click', '.username', MessagesView.handleClick);
-      },
+    // TODO: Perform any work which needs to be done
+    // when this view loads.
+  },
 
   render: function() {
+    // TODO: Render _all_ the messages.
+    $('#chats').empty();
+    // for loop to access all messages in storage
+    for (var i = 0; i < Messages.storage.length; i++) {
+      MessagesView.renderMessage(Messages.storage[i]);
+      //console.log(Messages.storage[i]['roomname']);
+      if (!Rooms.storage.includes(Messages.storage[i]['roomname'])) {
+        Rooms.storage.push(Messages.storage[i]['roomname']);
+      }
+    }
+    // call renderMessage to render each individual message
 
-    MessagesView.$chats.html('');
-    Messages
-      .items()
-      .filter(message => Rooms.isSelected(message.roomname))
-      .each(message => MessagesView.renderMessage(message));
   },
 
   renderMessage: function(message) {
-    var $message = MessageView.render(message);
-    MessagesView.$chats.prepend($message);
+    // TODO: Render a single message.
+
+    if (Friends.isFriend(message.username)) {
+      var newMessage = MessageView.renderFriend({
+        username: message.username,
+        text: message.text
+      });
+    } else {
+      var newMessage = MessageView.render({
+        username: message.username,
+        text: message.text
+      });
+    }
+    $('#chats').append(newMessage);
   },
 
   handleClick: function(event) {
-    // Get username from data attribute
-    var username = $(event.target).data('username');
-    if (username === undefined) { return; }
+    // TODO: handle a user clicking on a message
+    // (this should add the sender to the user's friend list).
+  },
 
-    Friends.toggleStatus(username, MessagesView.render);
-      }
+  handleRefresh: function(event) {
+    $('#refresh').on('click', function () {
+      App.fetch();
+    });
+  }
 
 };
+
+
+
+
+// var MessagesView = {
+
+//   $chats: $('#chats'),
+
+//   initialize: function() {
+
+//     MessagesView.$chats.on('click', '.username', MessagesView.handleClick);
+//       },
+
+//   render: function() {
+
+//     MessagesView.$chats.html('');
+//     Messages
+//       .items()
+//       .filter(message => Rooms.isSelected(message.roomname))
+//       .each(message => MessagesView.renderMessage(message));
+//   },
+
+//   renderMessage: function(message) {
+//     var $message = MessageView.render(message);
+//     MessagesView.$chats.prepend($message);
+//   },
+
+//   handleClick: function(event) {
+//     // Get username from data attribute
+//     var username = $(event.target).data('username');
+//     if (username === undefined) { return; }
+
+//     Friends.toggleStatus(username, MessagesView.render);
+//       }
+
+// };
