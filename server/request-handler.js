@@ -35,6 +35,7 @@ var requestHandler = function(request, response) {
     request.on('data', function(chunk) {
       body += chunk;
       storageArr.storageArr.push(JSON.parse(body));
+      // console.log('storageArr: ', storageArr.storageArr);
       response.writeHead(201, headers);
       response.end(JSON.stringify(storageArr.storageArr));
     });

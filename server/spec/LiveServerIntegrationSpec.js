@@ -65,5 +65,36 @@ describe('server', function() {
     });
   });
 
+  it('should respond to OPTIONS requests for /classes/messages with a 200 status code', function(done) {
+    request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
+      expect(response.statusCode).to.equal(200);
+      done();
+    });
+  });
 
+  it('should not send back an object', function(done) {
+    request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
+      var parsedBody = JSON.parse(body);
+      expect(parsedBody).to.not.equal('object');
+      done();
+    });
+  });
+  // it('should respond with messages that were previously posted', function(done) {
+  //   var requestParams = {method: 'OPTIONS',
+  //     uri: 'http://127.0.0.1:3000/classes/messages',
+  //     json: {
+  //       username: 'Jono',
+  //       text: 'What on earth, Jono?'}
+  //   };
+
+  //   request(requestParams, function(error, response, body) {
+  //     // Now if we request the log, that message we posted should be there:
+  //     request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
+  //       var messages = JSON.parse(body);
+  //       expect(messages[1].username).to.equal('Jono');
+  //       expect(messages[1].text).to.equal('What on earth, Jono?');
+  //       done();
+  //     });
+  //   });
+  // });
 });
